@@ -10,16 +10,37 @@ using UnityEngine.AI;
 public class CustomerAI : MonoBehaviour
 {
 
+    [SerializeField] private Animator animator;
     public int clothesNumber = 0;
     public int clothesCapacity = 1;
 
+    private Rigidbody Rb;
     [SerializeField] private bool isLookingFor = false;
     [SerializeField] private Vector3 ExitPos;
     [SerializeField] private States currentState;
     [SerializeField] private NavMeshAgent agent;
-    private void Update()
+    
+    private Vector3 previousPosition;
+    public float curSpeed;
+    
+    private void Awake()
     {
-        
+        Rb = GetComponent<Rigidbody>();
+    }
+    private void FixedUpdate()
+    {
+        Debug.Log(Rb.velocity.magnitude);
+        if (curSpeed > 0.01f)
+            animator.SetBool("IsWalking", true);
+        else
+            animator.SetBool("IsWalking", false);
+    }
+    
+    void Update()
+    {
+        Vector3 curMove = transform.position - previousPosition;
+        curSpeed = curMove.magnitude / Time.deltaTime;
+        previousPosition = transform.position;
     }
     
 

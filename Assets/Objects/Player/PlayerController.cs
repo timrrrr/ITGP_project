@@ -32,7 +32,9 @@ public class PlayerController : MonoBehaviour
         
         Vector3 lookRotation = StepRotate(desiredDirection);
         
-        Rb.rotation = Quaternion.LookRotation(lookRotation);
+        Debug.Log(Rb.velocity.magnitude);
+        if (Rb.velocity.magnitude > 0.01f)
+            Rb.rotation = Quaternion.LookRotation(lookRotation); 
 
         float OldVertVelocity = Rb.velocity.y;
         Vector3 velocity = desiredDirection * Speed;
