@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -10,10 +11,22 @@ public class GameManager : MonoBehaviour
     
     [SerializeField] private TextMeshProUGUI MoneyText;
 
+    public void Start()
+    {
+        MoneyText.text = "Money: " + currentMoney;
+    }
+
     public void EarnMoney(int money)
     {
         currentMoney += money;
         MoneyText.text = "Money: " + currentMoney;
     }
+    
+    public void SpendMoney(int money)
+    {
+        currentMoney -= money;
+        MoneyText.text = "Money: " + currentMoney;
+    }
+    
     
 }

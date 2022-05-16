@@ -9,11 +9,13 @@ using UnityEngine.AI;
 
 public class CustomerAI : MonoBehaviour
 {
+
     public int clothesNumber = 0;
     public int clothesCapacity = 1;
 
+    [SerializeField] private bool isLookingFor = false;
     [SerializeField] private Vector3 ExitPos;
-    private States currentState;
+    [SerializeField] private States currentState;
     [SerializeField] private NavMeshAgent agent;
     private void Update()
     {
@@ -27,28 +29,38 @@ public class CustomerAI : MonoBehaviour
         StartCoroutine(LookForHanger());
         // use coroutine so that we can immediately do something later in the start method
     }
+    
+    
 
     private IEnumerator LookForHanger()
     {
+        isLookingFor = true;
         agent.SetDestination(transform.position); // to stop the customer from moving
         currentState = States.LookingForAHanger;
-        Debug.Log("there"); 
+        
+        //Debug.Log("start while true");
         while (true)
         {
             Vector3 hangerPos = FindRandomHanger();
-            if (!hangerPos.Equals(new Vector3(0f, -100f, 0f)))
+            if (!hangerPos.Equals(new Vector3(0f, -100f, 0f)) && clothesNumber < clothesCapacity)
             {
                 GoToHanger(hangerPos); 
                 break;
             }
+            //Debug.Log("Cant find :("); 
             yield return new WaitForSeconds(2);
         }
+        isLookingFor = false;
         yield return null;
     }
 
     public void StartLookingAgain()
     {
-        LookForHanger();
+        if (currentState != States.LookingForAHanger && !isLookingFor)
+        {
+            StartCoroutine(LookForHanger());
+            //Debug.Log("StartLookingAgain"); 
+        }
     }
     
     // returns coordinates of the nearest hanger o
@@ -97,7 +109,7 @@ public class CustomerAI : MonoBehaviour
     {
         currentState = States.WalksAway; 
         agent.SetDestination(ExitPos);
-        Debug.Log("walsk away");
+        //Debug.Log("walks away");
     }
     private enum States
     {
