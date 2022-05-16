@@ -1,20 +1,14 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System.Security.Cryptography;
-using System.Linq;
 using UnityEngine.AI;
-
 
 public class CustomerAI : MonoBehaviour
 {
-
-    [SerializeField] private Animator animator;
+    
     public int clothesNumber = 0;
     public int clothesCapacity = 1;
-
     private Rigidbody Rb;
+    [SerializeField] private Animator animator;
     [SerializeField] private bool isLookingFor = false;
     [SerializeField] private Vector3 ExitPos;
     [SerializeField] private States currentState;
@@ -27,28 +21,33 @@ public class CustomerAI : MonoBehaviour
     {
         Rb = GetComponent<Rigidbody>();
     }
+    
     private void FixedUpdate()
     {
-        Debug.Log(Rb.velocity.magnitude);
-        if (curSpeed > 0.01f)
+        Debug.Log(curSpeed);
+        if (curSpeed > 1f)
             animator.SetBool("IsWalking", true);
         else
             animator.SetBool("IsWalking", false);
     }
     
-    void Update()
+    private IEnumerator UpdateSpeed ()
     {
-        Vector3 curMove = transform.position - previousPosition;
-        curSpeed = curMove.magnitude / Time.deltaTime;
-        previousPosition = transform.position;
+        while (true)
+        {
+            Vector3 curMove = transform.position - previousPosition;
+            curSpeed = curMove.magnitude / 0.2f;
+            previousPosition = transform.position;
+            
+            yield return new WaitForSeconds(0.2f);
+        }
+        
     }
     
-
     private void Start()
     {
-        //agent.SetDestination(new Vector3(-1.4f,0.4f,-3.003f));
         StartCoroutine(LookForHanger());
-        // use coroutine so that we can immediately do something later in the start method
+        StartCoroutine(UpdateSpeed());
     }
     
     
@@ -130,8 +129,17 @@ public class CustomerAI : MonoBehaviour
     {
         currentState = States.WalksAway; 
         agent.SetDestination(ExitPos);
+        StartCoroutine(DestroyLater());
+
         //Debug.Log("walks away");
     }
+
+    private IEnumerator DestroyLater()
+    {
+        yield return new WaitForSeconds(15);
+        Destroy(gameObject);
+    }
+
     private enum States
     {
         LookingForAHanger,

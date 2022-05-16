@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class CameraScript : MonoBehaviour
 {
+    public float smoothTime = 0.3F;
     private Vector3 offset;
     private GameObject player;
-    
-    public float smoothTime = 0.3F;
     private Vector3 velocity = Vector3.zero;
     
     // Start is called before the first frame update

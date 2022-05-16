@@ -1,15 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     public float Speed;
     public float RotationSpeed;
-    [SerializeField] private Animator animator;
-    
     private Rigidbody Rb;
-    //private Animator Animator;
+    [SerializeField] private Animator animator;
     
     private void Awake()
     {
@@ -19,7 +15,6 @@ public class PlayerController : MonoBehaviour
     private Vector3 StepRotate(Vector3 desiredDirection)
     {
         float step = RotationSpeed * Time.fixedDeltaTime;
-        // we can get current rotation from transform.forward
         Vector3 newRotation = Vector3.RotateTowards(transform.forward, desiredDirection, step, 0);
         return newRotation;
     }
@@ -32,16 +27,13 @@ public class PlayerController : MonoBehaviour
         
         Vector3 lookRotation = StepRotate(desiredDirection);
         
-        Debug.Log(Rb.velocity.magnitude);
-        if (Rb.velocity.magnitude > 0.01f)
-            Rb.rotation = Quaternion.LookRotation(lookRotation); 
+        Rb.rotation = Quaternion.LookRotation(lookRotation); 
 
         float OldVertVelocity = Rb.velocity.y;
         Vector3 velocity = desiredDirection * Speed;
         Rb.velocity = new Vector3(velocity.x, OldVertVelocity, velocity.z);
 
-        //Debug.Log(Rb.velocity.magnitude);
-        if (Rb.velocity.magnitude > 0.01f)
+        if (Rb.velocity.magnitude > 1f)
             animator.SetBool("IsWalking", true);
         else
             animator.SetBool("IsWalking", false);
